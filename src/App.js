@@ -1,25 +1,58 @@
-import logo from './logo.svg';
-import './App.css';
 
-function App() {
+import React, { useState } from 'react'
+import AddForm from './components/AddForm'
+import EditForm from './components/EditForm'
+
+
+
+const App = () => {
+    const peopleList = [
+    { id: 1, name: 'Brendan', age: 24 },
+    { id: 2, name: 'Matt', age: 34 },
+    { id: 3, name: 'Leland', age: 25 },
+  ]
+
+  const [people, setPeople] = useState(peopleList)
+
+  const addPerson = (person) => {
+      person.id = people.length + 1
+      setPeople([...people, person])
+  }
+
+  const deletePerson = (id) => {
+      setPeople(people.filter((person) => person.id !== id))
+  }
+
+  const editPerson = (updatedPerson, e) => {
+    let newPeopleArr = people.map((person) => {
+      if (person.id === updatedPerson.id) {
+        return updatedPerson
+      } else {
+        return person
+      }
+    })
+    setPeople(newPeopleArr)
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+      <div>
+        <h1>React Hooks CRUD</h1>
+        <AddForm addPerson={addPerson} />
+        {people.map((person) => {
+          return (
+            <>
+              <h3>Name: {person.name}</h3>
+              <h5>Age: {person.age}</h5>
+              <details>
+                <summary>Edit Person</summary>
+                <EditForm person={person} editPerson={editPerson} />
+                </details>
+              <button onClick={()=> deletePerson(person.id)}>X</button>
+            </>
+          )
+        })}
+      </div>
+  )
 }
 
-export default App;
+export default App
